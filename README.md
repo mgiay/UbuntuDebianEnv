@@ -7,7 +7,7 @@
     Contact to: iadmin@mgiay.com
     Repository Type: Public
 
-===============================
+
 ## ***Environment Information***    
     root@ns536903:/etc/haproxy/script# cat /etc/lsb-release
     DISTRIB_ID=Ubuntu
