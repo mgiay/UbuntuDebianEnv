@@ -8,7 +8,7 @@
 - Repository Type: Public
 
 ===============================
-### ***Environment Information: 20201210-08h22:***:
+### ***Environment Information: 20201210-08h22***
 - root@ns536903:/etc/haproxy/script# cat /etc/lsb-release
 - DISTRIB_ID=Ubuntu
 - DISTRIB_RELEASE=20.04
