@@ -5,13 +5,13 @@
 #Author: qwerty | tinhcx@gmail.com
 #LastUpdate: #2020.12.10-12.09.10.299
 ###################################
-mkdir -p /opt/setup; cd /opt/setup
-sudo apt-get -y update && /usr/bin/apt-get install -y make gcc libaio-dev fio  </dev/null
-wget https://github.com/Crowd9/Benchmark/raw/master/fio-2.0.9.tar.gz ; tar xf fio*
-cd fio-2.0.9;make;make install
+# mkdir -p /opt/setup; cd /opt/setup
+# sudo apt-get -y update && /usr/bin/apt-get install -y make gcc libaio-dev fio  </dev/null
+# wget https://github.com/Crowd9/Benchmark/raw/master/fio-2.0.9.tar.gz ; tar xf fio*
+# cd fio-2.0.9;make;make install
 
-cp fio /opt/script/fio.sh
-ls -lh /opt/script/fio.sh
+# cp fio /opt/script/fio.sh
+# ls -lh /opt/script/fio.sh
 #REF: https://dotlayer.com/how-to-use-fio-to-measure-disk-performance-in-linux/
 ###################################CONTENT:BEGIN
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
