@@ -1,0 +1,17 @@
+root@ns536903:/opt# cat /etc/rc.local 
+#!/bin/bash
+#!/bin/sh -e
+###################################
+#FILE_NAME: /etc/rc.local
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #2020.12.09-17.44.12.634
+###################################
+###################################CONTENT:BEGIN
+#/opt/script/haproxy-restart.sh
+#/opt/script/hostname-change.sh ns536903
+/opt/script/samba-stop.sh
+#######
+exit 0
+###################################CONTENT:END
+#THE-END
+root@ns536903:/opt# 

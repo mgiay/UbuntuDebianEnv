@@ -1,0 +1,133 @@
+#!/bin/bash
+###################################
+#FILE_NAME: /etc/iptables/rules.v4
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #2020.12.09-17.43.35.468
+###################################
+###################################CONTENT:BEGIN
+#__________________________________CONTENT:BEGIN
+#__________________________________CONTENT:BEGIN
+###################################
+#WAN: enp1s0f0
+#LAN: eth0
+###################################
+#FIREWALL START HERE
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [694:742341]
+
+#________________________FIREWALL_ICMP:BEGIN
+#DROP PING ICMP from WAN:
+#-A INPUT -p icmp -m icmp --icmp-type 8 -j DROP
+#-A INPUT -i enp1s0f0 -p tcp -m tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+#KEANGNAM OFFICE: ALLOW ICMP:
+# -A INPUT -s 118.70.129.67/32    -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# -A INPUT -s 27.72.88.85/32      -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# -A INPUT -s 113.190.235.124/32  -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# -A INPUT -s 27.68.131.146/32    -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# -A INPUT -s 113.190.252.1/32    -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# -A INPUT -s 42.112.210.35/32    -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# -A INPUT -s 27.72.89.143/32     -p icmp -m icmp --icmp-type 8 -j ACCEPT
+#OVH MONITOR SERVER: ALLOW ICMP:
+#-A INPUT -s 213.186.33.13/32    -p icmp -m icmp --icmp-type 8 -j ACCEPT
+#INTERNET: DROP ICMP:
+#-A INPUT -i enp1s0f0 -p icmp -m icmp --icmp-type 8 -j DROP
+#________________________FIREWALL_ICMP:END
+
+
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+#-A INPUT -p vrrp -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+
+#________________________FIREWALL:ACCESS_SERVER_PORT:BEGIN
+#BLOCK CONFICKER BOTNET:
+
+#Chan 1 IP: OUT
+#-A OUTPUT -d 216.66.15.109/32 -j DROP
+#-A OUTPUT -d 42.115.152.253/32 -j DROP
+#-A OUTPUT -s 172.16.107.17/32 -j DROP
+
+#Chan 1 NETWORK voi port 80
+#-A OUTPUT -p tcp -d 192.168.100.0/24 --dport 80 -j ACCEPT
+#Chan tat ca cac IP voi port 80. Server nay se ko the access bat ky dich vu gi su dung port 80
+#-A OUTPUT -p tcp --dport 80  -j DROP
+#-A OUTPUT -p tcp --dport 443 -j DROP
+
+
+#RULE HERE:
+
+#SSH: 65022
+#WEBMIN: 65443
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22    -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 65022 -j ACCEPT
+
+
+#FTP SERVER OVER LAN ONLY: FOR BACKUP ONLY
+# -A INPUT -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
+# -A INPUT -p tcp -m state --state NEW -m tcp --dport 60000:61000 -j ACCEPT
+# -A INPUT -p tcp -m multiport --dport 21,60000:61000 -j ACCEPT
+
+#HAPRORY: 80,443
+-A INPUT -p tcp -m multiport --dport 443,80 -j ACCEPT
+
+#NGINX: 8081,8082,8083,64180,64280,64281
+#-A INPUT -p tcp -m multiport --dport 8081,8082,8083,64180,64280,64281,19999 -j ACCEPT
+
+
+#PRIVATE LAN NETWORK:
+#PRIVATE LAN NETWORK: TRUST ALL:
+#-A INPUT -s 10.0.2.0/24 -p tcp -m state --state NEW -m tcp -j ACCEPT
+#-A INPUT -s 10.0.2.0/24 -p udp -m state --state NEW -m udp -j ACCEPT
+#-A INPUT -s 192.168.100.0/24 -p tcp -m state --state NEW -m tcp -j ACCEPT
+#PRIVATE LAN NETWORK: TRUST SOME PORTS:
+#-A INPUT -s 2.2.2.0/24 -p tcp -m multiport --dport 5432,6387,6388,6389 -j ACCEPT
+
+
+#SSH: 65022,22
+#-A INPUT -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+#KEANGNAM OFFICE:
+# -A INPUT -s 183.81.32.105/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+# -A INPUT -s 183.81.32.226/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+
+# -A INPUT -s 14.160.24.171/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+# -A INPUT -s 27.72.29.35/32      -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+# -A INPUT -s 118.70.175.147/32   -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+# -A INPUT -s 14.160.26.234/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
+
+#________________________FIREWALL:ACCESS_SERVER_PORT:END
+
+
+#IMP: Reject all except above
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+#________________________FIREWALL_INBOUND_OUTBOUND:BEGIN
+#SQUID: INBOUND
+#-A INPUT -i enp1s0f0 -p tcp -m tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+#HAPROXY: INBOUND
+#-A INPUT -i enp1s0f0 -p tcp -m tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+
+#IMP: Do not delete this rule
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+
+#SQUID: OUTBOUND
+#-A OUTPUT -o enp1s0f0 -p tcp -m tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+#HAPROXY: OUTBOUND
+#-A OUTPUT -o enp1s0f0 -p tcp -m tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+#________________________FIREWALL_INBOUND_OUTBOUND:END
+COMMIT
+#________________________NAT:BEGIN
+*nat
+:PREROUTING ACCEPT [507:45436]
+:POSTROUTING ACCEPT [1:108]
+:OUTPUT ACCEPT [1:108]
+#INTERNET GW: WAN: enp1s0f0
+#-A POSTROUTING -o enp1s0f0 -j MASQUERADE
+COMMIT
+#________________________NAT:END
+#__________________________________CONTENT:END
+#__________________________________CONTENT:END
+###################################CONTENT:END
+#FIREWALL END HERE
+#THE-END

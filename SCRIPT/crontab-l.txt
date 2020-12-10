@@ -1,0 +1,31 @@
+root@ns536903:/opt# crontab -l
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #2020.12.09-17.42.57.735
+###################################
+###################################CONTENT:BEGIN
+#*     *     *   *    *      command to be executed         
+#-     -     -   -    -                                       
+#|     |     |   |    |                                       
+#|     |     |   |    +----- day of week (MON-1|TUE-2|WED-3|THU-4|FRI-5|SAT-6|SUN-0)
+#|     |     |   +------- month (1-12)                    
+#|     |     +--------- day of month (1-31)
+#|     +----------- hour (0-23)                    
+#+------------- min (0-59)
+###################################
+#GET DATE PER 1min:
+#* * * * * /opt/script/schedule-per-1s.sh
+
+#Sync Time Server, daily, 23h00:          
+00 23 * * * /opt/script/time-force-update.sh
+
+#CRONTAB BACKUP, DAILY, 23h00:
+#00 23 * * * /opt/script/crontab-backup.sh
+
+# Check process HAProxy status every minute.
+# * * * * * /opt/script/haproxy_monitor_stats.sh
+
+#CLEAR RAM PER HOUR: 
+0 */1 * * * /opt/script/ram.clear.sh
+
+###################################CONTENT:END
+#THE-END

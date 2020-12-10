@@ -1,0 +1,17 @@
+#########################################
+#WAN-[enp1s0f0]-[0c:c4:7a:82:46:ae]-[139.99.8.170/24]
+#LAN-[enp1s0f0]-[0c:c4:7a:82:46:af]-NONE
+#Created #16:59 2020.12.09 | [SG-ns536903]-[139.99.8.170]-MONITOR02
+#########################################
+#Linux ns536903 4.15.0-122-generic #124-Ubuntu SMP Thu Oct 15 13:03:05 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+DISTRIB_RELEASE=18.04
+###OS VERSION INFO: lsb_release -a | cat /etc/lsb-release
+###lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+###7za: COMPRESS: 7za a -mhe=on -p310212 <dest.7z> <src> > /dev/null
+        EXTRACT : 7za x -mhe=on -p310212 <dest.7z>       > /dev/null
+# ###HAPROXY:  haproxy-stop.sh | haproxy-restart.sh | haproxy-reload.sh | haproxy-checkconfig.sh
+|    haproxy-sync-NODE01_2_NODE02.sh | haproxy-checkversion.sh | haproxy-concatenate-vhost.sh;haproxy-checkconfig.sh;
+|    ssl_expied_date.sh
+v    HAPROXY STATS REALTIME: watch -n 1 "COLUMN= echo 'show stat' | nc -U /var/lib/haproxy/stats"
+###PYTHON: python3.8 --version | python3 -V
+#########################################

@@ -16,8 +16,8 @@ Turning_Result="/opt/log/Turning/$Turning_Domain"
 mkdir -p $Turning_Result;cd $Turning_Result
 
 Turning_Log="$Turning_Result/$Turning_Domain-$CURRENT_YEAR$CURRENT_MONTH$CURRENT_DATE.log"
-pingp.sh $HOST_IP -p $HOST_PORT  \
-| xargs -n1 -i bash -c 'echo "$(date +'%Y.%m.%d-%H:%M:%S[%3N]')" "| {}"' >> \
+pingp.sh $HOST_IP -p $HOST_PORT --nocolor \
+| xargs -n1 -i bash -c 'echo "$(date +'%Y.%m.%d-%H:%M:%S')" "| {}"' >> \
 $Turning_Log \
 2>&1
 
