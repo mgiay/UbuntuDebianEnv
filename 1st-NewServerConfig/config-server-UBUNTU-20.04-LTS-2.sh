@@ -2090,34 +2090,6 @@ sudo make install
 #GitHub Private Repository:
 
 
-#LE:
-#https://github.com/mgiay/linux.ubuntu.env
-#https://github.com/mgiay/LinuxCore01
-file-unlock.sh
-#__________GitHub_Private_Global_Variable:BEGIN
-TOKEN="9fc1ca9d94ba4cff33a2171a0ed23f08893bd5f0"
-USER_NAME="mgiay"
-REPO_NAME="LinuxCore01"
-BRANCHE_NAME="master"
-FOLDER_NAME="OPT_SCRIPT"
-
-#__________DONWLOAD:BEGIN
-FILE_NAME="le-renew-CERTBOT_ACME_v2.ini"
-FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
-cd /opt/script
-curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
-
-FILE_NAME="le-renew-CERTBOT_ACME_v2.sh"
-FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
-cd /opt/script
-curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
-#__________DONWLOAD:END
-chmod  +x *.sh
-#
-
-
-
-
 
 
 
