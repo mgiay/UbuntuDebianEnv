@@ -1,7 +1,8 @@
-### ***Repository Name: UbuntuDebianEnv***:
-- URL: github.com/mgiay/UbuntuDebianEnv.git
+### ***Repository Name: [UbuntuDebianEnv]***:
+- URL: https://github.com/mgiay/UbuntuDebianEnv.git
 - Created 20201210-08h21 GMT+7 | Environment for Ubuntu/Debian Server
 - Contact to: iadmin@mgiay.com
+- Repository Type: Public
 
 
 ### ***ENV: 20201210-08h22:***:
