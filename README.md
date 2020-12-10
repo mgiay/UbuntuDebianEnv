@@ -4,7 +4,6 @@
 - Contact to: iadmin@mgiay.com
 
 
-
 ### ***ENV: 20201210-08h22:***:
 - root@ns536903:/etc/haproxy/script# cat /etc/lsb-release
 - DISTRIB_ID=Ubuntu
