@@ -1,6 +1,6 @@
 #!/bin/bash
-#/etc/haproxy/script/le_renew_[cmsapi.nextgen-global.com].sh
-#LastUpdate: #22:54 2020.03.04
+#/etc/haproxy/script/le_renew_[YourDomainName.com].sh
+#LastUpdate: #10:00 2020.01.16
 ##############################################
 #UBUNTU: /var/spool/cron/crontabs/root
 #CENTOS: /var/spool/cron/root
@@ -15,7 +15,7 @@
 #+------------- min (0-59)
 ##############################################
 #RENEW SSL CERT: T5-13h00, weekly:
-#00 13 * * 4 /etc/haproxy/script/le_renew_[cmsapi.nextgen-global.com].sh >> /opt/log/le_renew_[cmsapi.nextgen-global.com].sh/le_renew_[cmsapi.nextgen-global.com].sh-"$(date +'%Y.%m.%d-%H.%M.%S.%6N')".log 2>&1
+#00 13 * * 4 /etc/haproxy/script/le_renew_[YourDomainName.com].sh >> /opt/log/le_renew_[YourDomainName.com].sh/le_renew_[YourDomainName.com].sh-"$(date +'%Y.%m.%d-%H.%M.%S.%6N')".log 2>&1
 ##############################################
 # #PACKAGE="a b c"
 PACKAGE="tree bc p7zip git"
@@ -26,8 +26,8 @@ cat /dev/null > /var/log/letsencrypt/letsencrypt.log
 #***************************************
 #A/____________________LE_GLOBAL_VAR:BEGIN
 #======================================
-LE__SH_FILE_NAME="le_renew_[autoportal.global].sh"
-LE_INI_FILE_NAME="le_renew_[autoportal.global].ini"
+LE__SH_FILE_NAME="le_renew_[YourDomainName.com].sh"
+LE_INI_FILE_NAME="le_renew_[YourDomainName.com].ini"
 #======================================
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%6N')"
 
@@ -237,5 +237,4 @@ cp -v /var/log/letsencrypt/letsencrypt.log $LE_RENEW_LOG_LOCATION/letsencrypt-$n
 
 #cd /opt/letsencrypt;./letsencrypt-auto certonly --standalone
 #yum -y install tree bc p7zip  || ( apt-get -y install tree bc p7zip-full </dev/null )
-
 

@@ -1821,11 +1821,9 @@ echo "" > smb.conf
 
 mkdir -p /opt/script/
 cd /opt/script/
-#wget --no-check-certificate https://user:name@mirror.daivietgroup.net/paping/pingp.sh
-#wget https://github.com/mgiay/linux.ubuntu.env/blob/master/pingp.sh
-#wget --no-check-certificate https://github.com/mgiay/linux.ubuntu.env/raw/master/pingp/pingp.sh
-wget --no-check-certificate https://raw.githubusercontent.com/mgiay/linux.ubuntu.env/master/pingp.sh
-wget https://raw.githubusercontent.com/mgiay/linux.ubuntu.env/master/pingp/pingp2log.sh -O /opt/script/pingp2log.sh
+wget --no-check-certificate https://raw.githubusercontent.com/mgiay/UbuntuDebianEnv/main/SCRIPT/pingi.sh
+wget --no-check-certificate https://raw.githubusercontent.com/mgiay/UbuntuDebianEnv/main/SCRIPT/pingp.sh
+wget --no-check-certificate https://raw.githubusercontent.com/mgiay/UbuntuDebianEnv/main/SCRIPT/pingp2log.sh
 #CHMOD SCRIPT TO 777:
 #{
 #
