@@ -44,6 +44,30 @@ cd /opt/setup
 cat /dev/null > ubuntu20-packages.sh
 
 
+
+
+
+
+
+
+
+
+mkdir -p /opt/setup/
+cd /opt/setup/
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/setup/ubuntu20-packages.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+#chattr -i -f $FILE_NAME
+#cp -v $FILE_NAME $FILE_NAME-[$now1].bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+#!/bin/sh -e
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+###################################CONTENT:BEGIN
 #####################################
 #ubuntu20-packages.sh
 #LastUpdate: #12:33 2020.10.30
@@ -136,3 +160,12 @@ uuid-dev \
 wget \
 zlib1g-dev
 #
+
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+#chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+

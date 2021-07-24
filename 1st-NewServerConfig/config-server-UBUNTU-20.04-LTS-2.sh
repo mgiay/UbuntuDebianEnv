@@ -7,8 +7,24 @@ sudo apt-get -y install nload ntp ntpdate ntp-doc nano wget tree telnet htop kee
 sudo apt-get -y install iptables-persistent psmisc;
 sudo apt-get -y install geoip-bin;
 sudo apt-get -y install fping python-dev python-pip;
+sudo apt-get -y install fping python-dev-is-python2 python-pip;
 sudo apt-get -y install byobu screen tmux
 #######################################
+
+#tail -f /var/log/syslog
+# Dec 22 16:29:32 srv051 multipathd[720]: sda: add missing path
+# Dec 22 16:29:32 srv051 multipathd[720]: sda: failed to get udev uid: Invalid argument
+# Dec 22 16:29:32 srv051 multipathd[720]: sda: failed to get sysfs uid: Invalid argument
+# Dec 22 16:29:32 srv051 multipathd[720]: sda: failed to get sgio uid: No such file or directory
+service multipathd stop
+    # Warning: Stopping multipathd.service, but it can still be activated by:
+      # multipathd.socket
+    # root@srv051:/opt# 
+
+
+
+
+
 
 SCRIPT_LOC="/opt/script"
 mkdir -p $SCRIPT_LOC
@@ -27,7 +43,7 @@ cat <<EOF > $FILE_NAME
 #LastUpdate: #$now1
 ###################################
 ###################################CONTENT:BEGIN
-127.0.0.1 localhost ns536903
+127.0.0.1 localhost
 ###################################CONTENT:END
 #THE-END
 EOF
@@ -41,7 +57,7 @@ echo ""
 #HOSTNAME:
 #C1:
 #HOST_NAME="$(hostname)_india01"; hostnamectl set-hostname $HOST_NAME --static
-HOST_NAME="srv032"; hostnamectl set-hostname $HOST_NAME --static
+HOST_NAME="node01"; hostnamectl set-hostname $HOST_NAME --static
 
 
 
@@ -59,9 +75,9 @@ cat <<EOF > $FILE_NAME
 #LastUpdate: #$now1
 ###################################
 ###################################CONTENT:BEGIN
-HOST_NAME=$1
-hostnamectl set-hostname $HOST_NAME --static
-echo "127.0.0.1 "$HOST_NAME >> /etc/hosts
+HOST_NAME=\$1
+hostnamectl set-hostname \$HOST_NAME --static
+echo "127.0.0.1 "\$HOST_NAME >> /etc/hosts
 ###################################CONTENT:END
 #THE-END
 EOF
@@ -86,8 +102,9 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 # root@srv015:~# 
 
 
- 
 
+sudo systemctl disable systemd-resolved
+sudo systemctl stop systemd-resolved
 #__________[CONFIG]:BEGIN
 FILE_NAME="/etc/resolv.conf"
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
@@ -101,6 +118,7 @@ cat <<EOF > $FILE_NAME
 #LastUpdate: #$now1
 ###################################
 ###################################CONTENT:BEGIN
+#nameserver 172.16.0.8
 nameserver 1.1.1.1
 nameserver 8.8.8.8
 ###################################CONTENT:END
@@ -112,9 +130,9 @@ echo "FILE_NAME: $FILE_NAME";echo ""
 #__________[CONFIG]:END
 
 
-#Enable 'nano editor' with line number for user 'root':
-LINUX_USERNAME="root"
-echo "set linenumbers" > /$LINUX_USERNAME/.nanorc
+# #Enable 'nano editor' with line number for user 'root':
+# LINUX_USERNAME="root"
+# echo "set linenumbers" > /$LINUX_USERNAME/.nanorc
 
 
 
@@ -148,7 +166,7 @@ cat <<EOF >> $FILE_NAME
     systemctl disable <ServiceName> | systemctl enable <ServiceName>
     systemctl stop <ServiceName> | systemctl start <ServiceName> | systemctl restart <ServiceName>    
 ###7za: COMPRESS: 7za a -mhe=on -p310212 <dest.7z> <src> > /dev/null
-#        EXTRACT : 7za x -mhe=on -p310212 <dest.7z>       > /dev/null
+        EXTRACT : 7za x -mhe=on -p310212 <dest.7z>       > /dev/null
 ###HAPROXY: haproxy-restart.sh | haproxy-reload.sh | haproxy-stop.sh | haproxy-checkconfig.sh
     HAPROXY STATS REALTIME: watch -n 1 "COLUMN= echo 'show stat' | nc -U /var/lib/haproxy/stats"   
     haproxy-checkversion.sh | haproxy-concatenate-vhost.sh;haproxy-checkconfig.sh
@@ -322,7 +340,7 @@ cat <<EOF > $FILE_NAME
 #LastUpdate: #$now1
 ###################################
 ###################################CONTENT:BEGIN
-ETHERNET_LAN="ens160"
+ETHERNET_LAN="ens32"
 nload \$ETHERNET_LAN -t 3000 -i 10000 -o 50000
 ###################################CONTENT:END
 #THE-END
@@ -333,6 +351,29 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 #__________[CONFIG]:END
 
 
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/script/nload-WIFI.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+chattr -i -f $FILE_NAME
+cp -v $FILE_NAME $FILE_NAME.bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+###################################CONTENT:BEGIN
+ETHERNET_LAN="wlan0"
+nload \$ETHERNET_LAN -t 3000 -i 10000 -o 50000
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+
 
 #IPAS:
 #{
@@ -340,25 +381,25 @@ echo "ip a s" >/opt/script/ipas.sh
 #}
 
 
-#INSTALL NETDATA:
-#9:30 2020.10.27
-#https://www.howtoforge.com/tutorial/how-to-install-netdata-monitoring-tool-on-ubuntu/
-#
-sudo apt-get -y install netdata
-#
-# sudo nano /etc/netdata/netdata.conf
-# [global]
-        # run as user = netdata
-        # web files owner = root
-        # web files group = root
-        # # Netdata is not designed to be exposed to potentially hostile
-        # # networks.See https://github.com/firehol/netdata/issues/164
-        # #bind socket to IP = 127.0.0.1
-        # #bind socket to IP = 139.99.8.170
-        # bind socket to IP = 0.0.0.0
+# #INSTALL NETDATA:
+# #9:30 2020.10.27
+# #https://www.howtoforge.com/tutorial/how-to-install-netdata-monitoring-tool-on-ubuntu/
 # #
-sudo systemctl restart netdata
-sudo systemctl status netdata
+# sudo apt-get -y install netdata
+# #
+# # sudo nano /etc/netdata/netdata.conf
+# # [global]
+        # # run as user = netdata
+        # # web files owner = root
+        # # web files group = root
+        # # # Netdata is not designed to be exposed to potentially hostile
+        # # # networks.See https://github.com/firehol/netdata/issues/164
+        # # #bind socket to IP = 127.0.0.1
+        # # #bind socket to IP = 139.99.8.170
+        # # bind socket to IP = 0.0.0.0
+# # #
+# sudo systemctl restart netdata
+# sudo systemctl status netdata
 
 
 
@@ -421,6 +462,55 @@ cat $FILE_NAME
 chattr +i -f $FILE_NAME
 echo "FILE_NAME: $FILE_NAME"; echo ""
 #__________[CONFIG]:END
+
+
+
+
+#13:32 2021.02.08
+#NETWORK NEW IP:
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/script/network-new-ip.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+chattr -i -f $FILE_NAME
+cp -v $FILE_NAME $FILE_NAME-[$now1].bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+#Ex: network-new-ip.sh <Interace> <NewIP>     <Sequence>
+#network-new-ip.sh     eth0     10.0.2.118  1
+###################################CONTENT:BEGIN
+Interface=\$1
+NewIP=\$2
+Sequence=\$3
+
+#UBUNTU NETWORK NEW IP:
+ifconfig \$Interface:\$Sequence \$NewIP netmask 255.255.255.0; ifup \$Interface:\$Sequence
+
+ip a s
+echo "#################"
+ip route
+echo "#################"
+netstat -rn
+echo "#################"
+ping 8.8.8.8 -c 5
+
+echo "route delete default gw 10.10.13.1"
+echo "route add default gw 10.10.13.1"
+echo "ifconfig eth0 10.10.13.11 netmask 255.255.255.0 up"
+echo "ifup eth0"
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+#chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+
+
 
 
 
@@ -504,6 +594,7 @@ chattr +i -f $FILE_NAME
 echo "FILE_NAME: $FILE_NAME"; echo ""
 #__________[CONFIG]:END
 
+
 #__________[CONFIG]:BEGIN
 FILE_NAME="/etc/netplan/00-installer-config.yaml"
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
@@ -551,11 +642,11 @@ network:
 #_________[WAN]:BEGIN
 
 #_________[LAN]:BEGIN
-        ens160:
-            addresses: [10.0.2.30/24]
-            gateway4: 10.0.2.254
+        ens32:
+            addresses: [10.0.255.9/24]
+            gateway4: 10.0.255.2
             nameservers:
-                addresses: [1.1.1.1,8.8.8.8]
+                addresses: [8.8.8.8,1.1.1.1]
                 search: [google.com]
             dhcp4: no
 #_________[LAN]:END
@@ -644,6 +735,7 @@ cat <<EOF > $FILE_NAME
 ###################################CONTENT:BEGIN
 #Crontab Generator
 #https://crontab-generator.org/
+#https://crontab.guru/
 
 chattr -i /var/spool/cron/crontabs/root
 crontab -e
@@ -807,7 +899,7 @@ export HISTTIMEFORMAT='%F %T  '
 export EDITOR=nano
 ############################################
 #GLOBAL PATH VARIABLES:
-#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/jdk1.8.0_144/bin:/opt/script:/opt/lampp/b#in:/usr/local/pgsql/bin
+#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/jdk1.8.0_144/bin:/opt/script:/opt/lampp/bin:/usr/local/pgsql/bin
 #export PATH
 # PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # PATH=$PATH:$JAVA_HOME/bin:/opt/script
@@ -891,7 +983,7 @@ git config --global alias.last 'log -1 HEAD'
 EOF
 source /etc/profile
 cat $FILE_NAME
-chattr +i -f $FILE_NAME
+#chattr +i -f $FILE_NAME
 echo "FILE_NAME: $FILE_NAME"; echo ""
 #__________[GLOBAL_VARIABLES]:END
 
@@ -1096,7 +1188,7 @@ now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
 chattr -i -f $FILE_NAME
 cp -v $FILE_NAME $FILE_NAME-[$now1].bk
 
-ETHERNET_WAN="enp1s0f0"
+ETHERNET_WAN="ens32"
 ETHERNET_LAN="eth0"
 
 cat <<EOF > $FILE_NAME
@@ -1181,9 +1273,8 @@ cat <<EOF > $FILE_NAME
 
 #PRIVATE LAN NETWORK:
 #PRIVATE LAN NETWORK: TRUST ALL:
--A INPUT -s 10.0.2.0/24 -p tcp -m state --state NEW -m tcp -j ACCEPT
--A INPUT -s 10.0.2.0/24 -p udp -m state --state NEW -m udp -j ACCEPT
-#-A INPUT -s 192.168.100.0/24 -p tcp -m state --state NEW -m tcp -j ACCEPT
+-A INPUT -s 10.0.255.0/24 -p tcp -m state --state NEW -m tcp -j ACCEPT
+-A INPUT -s 10.0.255.0/24 -p udp -m state --state NEW -m udp -j ACCEPT
 #PRIVATE LAN NETWORK: TRUST SOME PORTS:
 #-A INPUT -s 2.2.2.0/24 -p tcp -m multiport --dport 5432,6387,6388,6389 -j ACCEPT
 
@@ -1193,12 +1284,6 @@ cat <<EOF > $FILE_NAME
 #KEANGNAM OFFICE:
 # -A INPUT -s 183.81.32.105/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
 # -A INPUT -s 183.81.32.226/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
-
-# -A INPUT -s 14.160.24.171/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
-# -A INPUT -s 27.72.29.35/32      -p tcp -m multiport --dport 65443,65022 -j ACCEPT
-# -A INPUT -s 118.70.175.147/32   -p tcp -m multiport --dport 65443,65022 -j ACCEPT
-# -A INPUT -s 14.160.26.234/32    -p tcp -m multiport --dport 65443,65022 -j ACCEPT
-
 #________________________FIREWALL:ACCESS_SERVER_PORT:END
 
 
@@ -1305,7 +1390,11 @@ cat <<EOF > $FILE_NAME
 ###################################
 ###################################CONTENT:BEGIN
 echo "############################################"
+echo "TCP:"
 netstat -ntlup | egrep "PID|LISTEN" | sort -t: -k2 -n
+
+echo "UDP:"
+netstat -ntlup | egrep "PID|udp" | sort -t: -k2 -n
 ###################################CONTENT:END
 #THE-END
 EOF
@@ -1574,7 +1663,41 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 
 
 
+
+
+
+
+
+
+
+
+
 #ENABLE [systemctl enable rc-local.service]:
+#__________[CONFIG]:BEGIN
+FILE_NAME="/etc/systemd/system/rc-local.service"
+cat <<EOF > $FILE_NAME
+[Unit]
+ Description=/etc/rc.local Compatibility
+ ConditionPathExists=/etc/rc.local
+
+[Service]
+ Type=forking
+ ExecStart=/etc/rc.local start
+ TimeoutSec=0
+ StandardOutput=tty
+ RemainAfterExit=yes
+ SysVStartPriority=99
+
+[Install]
+ WantedBy=multi-user.target
+EOF
+#__________[CONFIG]:END
+systemctl status rc-local
+echo "" > /etc/rc.local;chmod +x /etc/rc.local
+systemctl enable rc-local
+sudo systemctl start rc-local.service
+sudo systemctl status rc-local.service
+
 #__________[CONFIG]:BEGIN
 FILE_NAME="/etc/rc.local"
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
@@ -1592,6 +1715,11 @@ cat <<EOF > $FILE_NAME
 #/opt/script/haproxy-restart.sh
 #/opt/script/hostname-change.sh $HOSTNAME
 /opt/script/samba-stop.sh
+
+
+service multipathd stop
+
+netplan apply
 #######
 exit 0
 ###################################CONTENT:END
@@ -1695,7 +1823,7 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 
 #IOSTATS:
 #__________[CONFIG]:BEGIN
-FILE_NAME="/opt/script/ram.clear.sh"
+FILE_NAME="/opt/script/iops-harddisk-stats.sh"
 now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
 chattr -i -f $FILE_NAME
 cp -v $FILE_NAME $FILE_NAME-[$now1].bk
@@ -1716,20 +1844,28 @@ cat $FILE_NAME
 chattr +i -f $FILE_NAME
 echo "FILE_NAME: $FILE_NAME"; echo ""
 #__________[CONFIG]:END
+
+
+
 #IOPS CALCULATE:
 #INSTALL:
 #{
 mkdir -p /opt/setup
 cd /opt/setup
-yum install -y make gcc libaio-devel || ( /usr/bin/apt-get -y update && /usr/bin/apt-get install -y make gcc libaio-dev  </dev/null )
-wget https://github.com/Crowd9/Benchmark/raw/master/fio-2.0.9.tar.gz ; tar xf fio*
-cd fio-2.0.9;make;make install
+sudo apt-get install -y fio
 
-cp fio /opt/script/fio.sh
-ls -lh /opt/script/fio.sh
-/bin/rm -rf fio*
-/bin/rm -rf /opt/setup/fio*
+#yum install -y make gcc libaio-devel || ( /usr/bin/apt-get -y update && /usr/bin/apt-get install -y make gcc libaio-dev  </dev/null )
+#sudo apt-get -y update && /usr/bin/apt-get install -y make gcc libaio-dev fio  </dev/null
+# wget https://github.com/Crowd9/Benchmark/raw/master/fio-2.0.9.tar.gz ; tar xf fio*
+# cd fio-2.0.9;make;make install
+# cp fio /opt/script/fio.sh
+# ls -lh /opt/script/fio.sh
+# /bin/rm -rf fio*
+# /bin/rm -rf /opt/setup/fio*
 #}
+
+
+
 #SCRIPT: iops-harddisk.sh
 #INTEL SSD 540S 240GB: READ iops=20132 | WRITE iops=6657 
 #__________[CONFIG]:BEGIN
@@ -1745,6 +1881,7 @@ cat <<EOF > $FILE_NAME
 #Author: qwerty | tinhcx@gmail.com
 #LastUpdate: #$now1
 ###################################
+#REF: https://dotlayer.com/how-to-use-fio-to-measure-disk-performance-in-linux/
 ###################################CONTENT:BEGIN
 now1="\$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
 
@@ -1755,32 +1892,25 @@ FILE_SIZE=200M
 LOG_FOLDER=/opt/log/iops-result
 mkdir -p \$LOG_FOLDER
 
-RESULT_LOG=\$LOG_FOLDER/iops-harddisk-\$FILE_SIZE-\$now1.log
-
 HARD_DISK=/opt/test.data
 #mkdir -p \$HARD_DISK
+
+RESULT_LOG=\$LOG_FOLDER/iops-harddisk-[\$FILE_SIZE]-[\$now1].log
+
 cat /dev/null > \$HARD_DISK
 echo "###########################">> \$RESULT_LOG
-date >> \$RESULT_LOG
-echo $HARD_DISK >> \$RESULT_LOG
-#fio.sh --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=\$HARD_DISK --bs=4k --iodepth=64 --size=\$FILE_SIZE --readwrite=randrw --rwmixread=75 >> \$RESULT_LOG
-#/bin/rm -rf \$HARD_DISK
-#date >> \$RESULT_LOG
+date  >> \$RESULT_LOG
+echo  >> \$RESULT_LOG
+echo "COMMAND1: fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=\$HARD_DISK --bs=4k --iodepth=64 --size=\$FILE_SIZE --readwrite=randrw --rwmixread=75" >> \$RESULT_LOG
+fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=\$HARD_DISK --bs=4k --iodepth=64 --size=\$FILE_SIZE --readwrite=randrw --rwmixread=75 >> \$RESULT_LOG
 
 
-/opt/script/fio.sh \
---randrepeat=1 \
---ioengine=libaio \
---direct=1 \
---gtod_reduce=1 \
---name=test \
---filename=$HARD_DISK \
---bs=4k \
---iodepth=64 \
---size=$FILE_SIZE \
---readwrite=randrw \
---rwmixread=75 >> \$RESULT_LOG
 
+echo "###########################" >> \$RESULT_LOG
+echo "COMMAND2: /opt/script/fio.sh --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=\$HARD_DISK --bs=4k --iodepth=64 --size=\$FILE_SIZE --readwrite=randrw --rwmixread=75" >> \$RESULT_LOG
+/opt/script/fio.sh --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=\$HARD_DISK --bs=4k --iodepth=64 --size=\$FILE_SIZE --readwrite=randrw --rwmixread=75 >> \$RESULT_LOG
+
+cd /opt/
 /bin/rm -rf \$HARD_DISK
 date >> \$RESULT_LOG
 cd \$LOG_FOLDER
@@ -1818,7 +1948,7 @@ echo "" > smb.conf
 
 
 
-
+#10:17 2020.12.10
 mkdir -p /opt/script/
 cd /opt/script/
 wget --no-check-certificate https://raw.githubusercontent.com/mgiay/UbuntuDebianEnv/main/SCRIPT/pingi.sh
@@ -1831,6 +1961,7 @@ cd /opt/script/
 chmod +x *.sh
 #
 #}
+
 
 
 
@@ -1873,10 +2004,10 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 # Python 3.8.5
 
 #https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server
-sudo apt-get install -y python3-venv
+#sudo apt-get install -y python3-venv
 
-sudo apt-get -y install python-is-python2
-sudo apt-get -y install python3-dev-is-python2
+# sudo apt-get -y install python-is-python2
+# sudo apt-get -y install python3-dev-is-python2
 #E: Package 'python3-virtualenv' has no installation candidate
 sudo apt-get -y install python3-virtualenv
 #sudo apt-get -y install certbot python3-certbot-apache
@@ -1899,8 +2030,11 @@ sudo apt-get -y install certbot
 #E: Package 'python-virtualenv' has no installation candidate
 #Package python-virtualenv is not available, but is referred to by another package.
 #cd /opt/certbot;./letsencrypt-auto certonly --standalone
+#cd /opt/certbot; certbot certonly --standalone
 
-cd /opt/certbot; /usr/bin/certbot certonly --standalone
+sudo apt-get install certbot -y
+certbot certonly --standalone
+
 Enter email address (used for urgent renewal and security notices) (Enter 'c' to
 cancel): tinhcx@gmail.com
 
@@ -2040,12 +2174,64 @@ echo "FILE_NAME: $FILE_NAME"; echo ""
 
 
 
-#HAPROXY-2.2.6 + OpenSSL:
-#ChangeLog: 2020/11/30 : 2.2.6
+#HAPROXY2 + OpenSSL:
+#__________GitHub_Private_Global_Variable:BEGIN
+TOKEN="9fc1ca9d94ba4cff33a2171a0ed23f08893bd5f0"
+USER_NAME="mgiay"
+REPO_NAME="LinuxCore01"
+BRANCHE_NAME="master"
+FOLDER_NAME="OPT_SETUP_haproxy"
+
+#__________DONWLOAD_SCRIPT_INSTALL_HAPROXY_OPENSSL:BEGIN
+FILE_NAME="haproxy-1.8.12-portable-install.sh"
+FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
+
+cd /opt/setup;
+#/bin/rm -rf $FILE_NAME
+/bin/rm -rf /opt/setup/haproxy*
+/bin/rm -rf /etc/haproxy*
+file-unlock.sh
+curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
+#__________DONWLOAD_SCRIPT_INSTALL_HAPROXY_OPENSSL:END
+chmod  +x haproxy-1.8.12-portable-install.sh
+./haproxy-1.8.12-portable-install.sh
+#
+
+
+
+
+#LE:
+file-unlock.sh
+#__________GitHub_Private_Global_Variable:BEGIN
+TOKEN="9fc1ca9d94ba4cff33a2171a0ed23f08893bd5f0"
+USER_NAME="mgiay"
+REPO_NAME="LinuxCore01"
+BRANCHE_NAME="master"
+FOLDER_NAME="OPT_SCRIPT"
+
+#__________DONWLOAD:BEGIN
+FILE_NAME="le-renew-CERTBOT_ACME_v2.ini"
+FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
+cd /opt/script
+curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
+
+FILE_NAME="le-renew-CERTBOT_ACME_v2.sh"
+FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
+cd /opt/script
+curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
+#__________DONWLOAD:END
+chmod  +x *.sh
+#
+
+
+
+#HAPROXY-2.2.11
+#Release date: 2020-07-07
+#End of life : 2025-Q2 (LTS)
+# http://www.haproxy.org/download/2.2/src/haproxy-2.2.11.tar.gz
 #http://www.haproxy.org/download/2.2/src/CHANGELOG
 #__________[CONFIG]:BEGIN
 header='\-d --header="User-Agent: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"';
-
 mkdir -p /opt/setup/;cd /opt/setup/
 
 mkdir -p /opt/openssl-1.1.1g
@@ -2059,7 +2245,10 @@ make;make test;make install
 cd /opt/setup/
 sudo apt-get -y update
 sudo apt-get -y install git ca-certificates gcc libc6-dev liblua5.3-dev libpcre3-dev libssl-dev libsystemd-dev make wget zlib1g-dev
-HAPROXY_VERSION="haproxy-2.2.6"
+
+
+
+HAPROXY_VERSION="haproxy-2.2.11"
 wget "$header" http://www.haproxy.org/download/2.2/src/$HAPROXY_VERSION.tar.gz
 tar -xf $HAPROXY_VERSION.tar.gz
 cd $HAPROXY_VERSION
@@ -2075,17 +2264,79 @@ USE_PCRE=1 \
 USE_ZLIB=1 \
 USE_SYSTEMD=1 \
 EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
-
 #
 sudo make install-bin
-
 #
 sudo make install
-#__________[CONFIG]:END
+# #__________[CONFIG]:END
+
+
+
+
+#GitHub Download Folder Only:
+#__________[GITHUB_DOWNLOAD]:BEGIN
+sudo apt-get -y install subversion
+
+
+sudo apt-get -y update
+sudo apt-get -y install git ca-certificates gcc libc6-dev liblua5.3-dev libpcre3-dev libssl-dev libsystemd-dev make wget zlib1g-dev
+
+#REPO: 
+#FULL: 
+#https://github.com/mgiay/UbuntuDebianEnv.git
+#https://github.com/mgiay/UbuntuDebianEnv/
+
+#SUB : https://github.com/mgiay/UbuntuDebianEnv/tree/main/HaProxy/HaProxy-2.2.6
+
+GITHUB_USERNAME="mgiay"
+GITHUB_PROJECT="UbuntuDebianEnv"
+GITHUB_SUB_FLD="HaProxy/HaProxy-2.2.6"
+DEST_LOCAL="HaProxy-2.2.6"
+#LISTING: svn ls https://github.com/$GITHUB_USERNAME/$GITHUB_PROJECT
+#DOWNLOADING: 
+svn export https://github.com/$GITHUB_USERNAME/$GITHUB_PROJECT/trunk/$GITHUB_SUB_FLD $DEST_LOCAL
+#__________[GITHUB_DOWNLOAD]:END
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 #GitHub Private Repository:
+#LE:
+#https://github.com/mgiay/linux.ubuntu.env
+#https://github.com/mgiay/LinuxCore01
+file-unlock.sh
+#__________GitHub_Private_Global_Variable:BEGIN
+TOKEN="9fc1ca9d94ba4cff33a2171a0ed23f08893bd5f0"
+USER_NAME="mgiay"
+REPO_NAME="LinuxCore01"
+BRANCHE_NAME="master"
+FOLDER_NAME="OPT_SCRIPT"
+
+#__________DONWLOAD:BEGIN
+FILE_NAME="le-renew-CERTBOT_ACME_v2.ini"
+FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
+cd /opt/script
+curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
+
+FILE_NAME="le-renew-CERTBOT_ACME_v2.sh"
+FILE_URL="https://raw.githubusercontent.com/$USER_NAME/$REPO_NAME/$BRANCHE_NAME/$FOLDER_NAME/$FILE_NAME"
+cd /opt/script
+curl -H "Authorization: token $TOKEN" $FILE_URL -o $FILE_NAME
+#__________DONWLOAD:END
+chmod  +x *.sh
+#
+
+
 
 
 
@@ -2174,9 +2425,9 @@ cat <<EOF > $FILE_NAME
 #C2: sh ps-kill-process-name.sh "<ps1|ps2|..|psn>"
 #ex: sh ps-kill-process-name.sh "haproxy|pure|mysqld|redis|nginx|php|netdata"
 ###################################
-var1=$1
-ps aux | egrep $var1 | awk '{print $2}' | xargs kill -9
-ps aux | egrep $var1
+var1=\$1
+ps aux | egrep \$var1 | awk '{print \$2}' | xargs kill -9
+ps aux | egrep \$var1
 ###################################CONTENT:END
 #THE-END
 EOF
@@ -2227,6 +2478,217 @@ source /etc/profile; file-unlock.sh; history -c; history-clear.sh; file-unlock.s
 #service ssh restart;service netfilter-persistent restart;netstat-status.sh;fwstatus.sh;source /etc/profile;file-unlock.sh ;history -c;history-clear.sh;file-unlock.sh; ospoweroff.sh;
 
 #service ssh restart;service netfilter-persistent restart;netstat-status.sh;fwstatus.sh;source /etc/profile;file-unlock.sh ;history -c;history-clear.sh;file-unlock.sh; osreboot.sh
+
+
+
+
+
+#Grep uncommented line:
+#https://unix.stackexchange.com/questions/484614/grep-string-only-in-uncommented-line
+#grep -v '^ *#' filename.txt  | grep searchstring
+#-v -> Inverse
+#-v "^ *#" -> Print the lines without "#" in the starting line (# ABC - This line is also avoided)
+#grep -v '^#' myfile.txt | grep string_to_search
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/script/file-uncommented-line_HashMark.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+chattr -i -f $FILE_NAME
+cp -v $FILE_NAME $FILE_NAME-[$now1].bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+#!/bin/sh -e
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+#ex: file-uncommented-line.sh <filename>
+###################################CONTENT:BEGIN
+now1="\$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+TEMP_LOC="/opt/temp"; mkdir -p \$TEMP_LOC
+
+FileWithFullPath="\$1"
+FileNameOnly="\${FileWithFullPath##*/}"
+
+FileName_WithoutExtension="\${FileNameOnly%.*}"
+FileExtensionOnly="\${FileNameOnly##*.}"
+
+echo "FileWithFullPath         : \$FileWithFullPath"
+echo "FileNameOnly             : \$FileNameOnly"
+echo "FileName_WithoutExtension: \$FileName_WithoutExtension"
+echo "FileExtensionOnly        : \$FileExtensionOnly"
+
+echo "=========================="
+echo "REMOVE HASH COMMENT: DONE"
+#grep -v '^ *#' \$FileWithFullPath > \$TEMP_LOC/\$FileName_WithoutExtension"_RemovedHash".\$FileExtensionOnly
+grep -o '^[^#]*' \$FileWithFullPath > \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedHash"
+sleep 2
+
+echo "=========================="
+echo "REMOVE EMPTY LINES: DONE"
+#sed '/^\$/d' \$TEMP_LOC/\$FileName_WithoutExtension"_RemovedHash".\$FileExtensionOnly > \$TEMP_LOC/\$FileName_WithoutExtension"_RemovedEmpyLines".\$FileExtensionOnly
+grep "\S" \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedHash" > \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedEmpyLines"
+sleep 2
+
+echo "=========================="
+echo "RESULT: "
+ls -l \$TEMP_LOC/\$FileName_WithoutExtension*
+
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+chmod +x $FILE_NAME
+chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+#$FILE_NAME /etc/MailScanner/MailScanner.conf 
+
+
+
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/script/file-uncommented-line_Semicolon.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+chattr -i -f $FILE_NAME
+cp -v $FILE_NAME $FILE_NAME-[$now1].bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+#!/bin/sh -e
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+#ex: file-uncommented-line.sh <filename>
+###################################CONTENT:BEGIN
+now1="\$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+TEMP_LOC="/opt/temp"; mkdir -p \$TEMP_LOC
+
+FileWithFullPath="\$1"
+FileNameOnly="\${FileWithFullPath##*/}"
+
+FileName_WithoutExtension="\${FileNameOnly%.*}"
+FileExtensionOnly="\${FileNameOnly##*.}"
+
+echo "FileWithFullPath         : \$FileWithFullPath"
+echo "FileNameOnly             : \$FileNameOnly"
+echo "FileName_WithoutExtension: \$FileName_WithoutExtension"
+echo "FileExtensionOnly        : \$FileExtensionOnly"
+
+echo "=========================="
+echo "REMOVE SEMICOLON COMMENT: DONE"
+#grep -o '^[^#]*' \$FileWithFullPath > \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedSemicolon"
+   grep -v '^ *;' \$FileWithFullPath > \$TEMP_LOC/\$FileName_WithoutExtension"_RemovedSemicolon".\$FileExtensionOnly
+sleep 2
+
+echo "=========================="
+echo "REMOVE EMPTY LINES: DONE"
+grep "\S" \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedSemicolon" > \$TEMP_LOC/\$FileName_WithoutExtension"."\$FileExtensionOnly"_RemovedEmpyLines"
+sleep 2
+
+echo "=========================="
+echo "RESULT: "
+ls -l \$TEMP_LOC/\$FileName_WithoutExtension*
+
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+chmod +x $FILE_NAME
+chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+#$FILE_NAME /etc/MailScanner/MailScanner.conf 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#__________[CONFIG]:BEGIN
+FILE_NAME="/opt/script/ip-4-dynamic.sh"
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+chattr -i -f $FILE_NAME
+cp -v $FILE_NAME $FILE_NAME-[$now1].bk
+cat <<EOF > $FILE_NAME
+#!/bin/bash
+#!/bin/sh -e
+###################################
+#FILE_NAME: $FILE_NAME
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #$now1
+###################################
+###################################CONTENT:BEGIN
+INTERFACE="ens32"
+SUBNET="255.255.255.0"
+IP="10.0.255.81"
+GW="10.0.255.2"
+#ip addr del \$IP dev \$INTERFACE
+
+ifconfig \$INTERFACE \$IP netmask \$SUBNET
+#route delete default gw \$GW
+#ip addr del \$IP dev \$INTERFACE
+
+route add default gw \$GW
+
+sleep 3
+
+IP="10.0.255.81"
+ifconfig \$INTERFACE:1 \$IP netmask \$SUBNET
+###################################CONTENT:END
+#THE-END
+EOF
+cat $FILE_NAME
+chattr +i -f $FILE_NAME
+echo "FILE_NAME: $FILE_NAME"; echo ""
+#__________[CONFIG]:END
+
+
+
+
+
+##################################################################################
+#!/bin/bash
+#!/bin/sh -e
+#/opt/script/routing-monitor-stats.sh
+##############################################
+#LastUpdate: 2021.07.23 8:28:04
+#Author: qwerty | tinhcx@gmail.com
+##############################################
+# Check ROUTING status every minute:
+# * * * * * /opt/script/routing-monitor-stats.sh >> /opt/log/routing-monitor-stats/routing-monitor-stats.log 2>&1
+##############################################
+now1="$(date +'%Y.%m.%d-%H.%M.%S.%3N')"
+##############################################
+COMMAND1="ip route"
+SUBNET1="192.168.202"
+##############################################
+mkdir -p /opt/log/routing-monitor-stats/
+cd /opt/log/routing-monitor-stats/
+
+VAR1=$($COMMAND1 | grep "$SUBNET1" | awk '{print $1}');
+if [ -z "$VAR1" ]
+then
+      #/opt/script/route-2-dbzone.sh
+      #route add -net 192.168.202.0 netmask 255.255.255.0 gw 192.168.100.99 ens160
+      echo "[$now1]: Subnet [$SUBNET1"".0/24] is MISSING";
+else      
+      echo "[$now1]: Subnet [$SUBNET1"".0/24] is RUNNING";
+fi
+
+#truncate file, keep 7days log:
+FILE_NAME="/opt/log/routing-monitor-stats/routing-monitor-stats.log"
+tail -10080 $FILE_NAME > $FILE_NAME.temp && cat $FILE_NAME.temp > $FILE_NAME
+#THE_END
+##################################################################################
+
 
 
 
