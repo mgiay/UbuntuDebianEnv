@@ -1,6 +1,6 @@
 #/etc/profile
 ######################################################
-#LastUpdate: #9:20 2021.07.24, #9:09 2021.07.24
+#LastUpdate: #9:39 2021.07.24, #9:20 2021.07.24, #9:09 2021.07.24
 ######################################################
 #OS TYPE:
 # DISTRIB_ID=Ubuntu
@@ -55,7 +55,7 @@ export HISTTIMEFORMAT='%F %T  '
 export EDITOR=nano
 #====================
 #GLOBAL PATH VARIABLES:
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/jdk-16.0.2/bin:/opt/script:/opt/lampp/bin:/usr/local/pgsql/bin:/opt/mariadb/bin
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/jdk/bin:/opt/script:/opt/lampp/bin:/usr/local/pgsql/bin:/opt/mariadb/bin
 export PATH
 
 #JAVA CLASSPATH:
@@ -65,7 +65,9 @@ export PATH
 #cd /opt/
 #wget https://download.java.net/java/GA/jdk16.0.2/d4a915d82b4c4fbb9bde534da945d746/7/GPL/openjdk-16.0.2_linux-x64_bin.tar.gz
 #tar -xf openjdk-16.0.2_linux-x64_bin.tar.gz
-JAVA_HOME=/opt/jdk-16.0.2
+#\rm -rf openjdk-16.0.2_linux-x64_bin.tar.gz
+#ln -s /opt/jdk-16.0.2 jdk
+JAVA_HOME=/opt/jdk
 export JAVA_HOME
 
 # JRE_HOME=/opt/jdk1.8.0_141/jre
