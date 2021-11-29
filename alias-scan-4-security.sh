@@ -3,6 +3,8 @@
 ########################################################
 #LastUpdate: #11:20 2021.11.29
 ########################################################
+#wget https://raw.githubusercontent.com/mgiay/UbuntuDebianEnv/main/alias-scan-4-security.sh -O alias-scan-4-security.sh
+########################################################
 TEMP="/opt/temp"; mkdir -p $TEMP;cd $TEMP
 
 ALIAS_RESULT="$TEMP/alias-scan-4-security.result.txt"
@@ -28,7 +30,7 @@ do
     cat .profile|grep alias     >> $ALIAS_RESULT 2>&1    
 done
 
-echo "SECURITY RISK RESULT:"
+echo "SECURITY RISK RESULT: $ALIAS_RESULT"
 cat --number $ALIAS_RESULT | egrep "rm|unlink|shred|delete|mv|cp|null|reboot|poweroff|exec|kill|ps"
 
 #THE_END
