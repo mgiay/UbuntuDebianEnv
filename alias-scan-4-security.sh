@@ -21,16 +21,14 @@ echo "" >> $ALIAS_RESULT 2>&1
 #2/ SCAN "/home/<username>/.profile
 HOME_FOLDER="/home";cd $HOME_FOLDER
 for FOLDERS in $( ls -ld */ | awk '{ print $9}' );\
-do
-    #Di vao tung thu muc hien thoi va tien hanh xoa cac file trong cac thu muc:
+do    
     USER_FOLDER=$HOME_FOLDER/$FOLDERS
     cd $USER_FOLDER
     echo "SCAN [$USER_FOLDER]"  >> $ALIAS_RESULT 2>&1
     cat .profile|grep alias     >> $ALIAS_RESULT 2>&1    
 done
 
-echo "RESULT:"
+echo "SECURITY RISK RESULT:"
 cat --number $ALIAS_RESULT | egrep "rm|unlink|shred|delete|mv|cp|null|reboot|poweroff|exec|kill|ps"
 
 #THE_END
-
