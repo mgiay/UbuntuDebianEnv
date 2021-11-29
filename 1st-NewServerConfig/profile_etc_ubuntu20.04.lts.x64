@@ -90,7 +90,11 @@ export JAVA_HOME
 
 #____________________[GLOBAL_ALIAS]:BEGIN
 #https://viblo.asia/p/su-dung-alias-trong-linux-qm6RWq4xGeJE
-alias ll='ls -l'
+alias ls='ls -F --color=auto'
+alias ll='ls -l --color=auto'
+alias l.='ls -d .* --color=auto'
+alias lsd='ls -ld */'
+
 alias rm='echo "command not found"; false'
 
 #/usr/bin/apt       install x
@@ -109,9 +113,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias du='du -h'
 alias df='df -h'
-alias l.='ls -d .* --color=auto'
-alias ls='ls -F --color=auto'
-alias lsd='ls -ld */'
+
 
 #Xóa màn hình và hiển thị file, thư mục con
 alias cl='clear && ls'
