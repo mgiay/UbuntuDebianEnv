@@ -1,24 +1,24 @@
 #/etc/profile
 ######################################################
-#LastUpdate: #9:39 2021.07.24, #9:20 2021.07.24, #9:09 2021.07.24
+#LastUpdate: #16:02 2021.12.02
 ######################################################
-#OS TYPE:
-#cat /etc/os-release 
-#PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
-#NAME="Debian GNU/Linux"
-#VERSION_ID="11"
-#VERSION="11 (bullseye)"
-#VERSION_CODENAME=bullseye
-#ID=debian
-#HOME_URL="https://www.debian.org/"
-#SUPPORT_URL="https://www.debian.org/support"
-#BUG_REPORT_URL="https://bugs.debian.org/"
-#KERNEL: "Linux debian042 5.10.0-9-amd64 #1 SMP Debian 5.10.70-1 (2021-09-30) x86_64 GNU/Linux"
+# OS TYPE:
+# cat /etc/os-release
+# PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+# NAME="Debian GNU/Linux"
+# VERSION_ID="11"
+# VERSION="11 (bullseye)"
+# VERSION_CODENAME=bullseye
+# ID=debian
+# HOME_URL="https://www.debian.org/"
+# SUPPORT_URL="https://www.debian.org/support"
+# BUG_REPORT_URL="https://bugs.debian.org/"
+# KERNEL: "Linux debian042 5.10.0-9-amd64 #1 SMP Debian 5.10.70-1 (2021-09-30) x86_64 GNU/Linux"
 ######################################################
+
 #____________________[PROFILE_ORIGINAL]:BEGIN
 # /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
 # and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
-
 if [ "$(id -u)" -eq 0 ]; then
   PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 else
@@ -112,14 +112,16 @@ alias rm='echo "command not found"; false'
 
 #/usr/bin/apt       install x
 #/usr/bin//usr/bin/apt-get   install x
+#/usr/bin/apt-get
 alias apt-get='echo "command not found"; false'
-alias apt='echo "command not found"; false'
+alias     apt='echo "command not found"; false'
 
 
-alias ai='sudo /usr/bin/apt-get install'
-alias ar='sudo /usr/bin/apt-get remove'
-alias au='sudo /usr/bin/apt-get update'
-alias aug='sudo /usr/bin/apt-get upgrade'
+#15:56 2021.12.02:
+#alias  ai='sudo /usr/bin/apt-get install'
+#alias  ar='sudo /usr/bin/apt-get remove'
+#alias  au='sudo /usr/bin/apt-get update'
+#alias aug='sudo /usr/bin/apt-get upgrade'
 
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -128,16 +130,16 @@ alias du='du -h'
 alias df='df -h'
 
 
-#Xóa màn hình và hiển thị file, thư mục con
+#Xoa man hinh va hien thi file, thu muc con
 alias cl='clear && ls'
 
 alias e='exit'
-alias s='sudo'
+#alias s='sudo'
 
-#Sửa file alias
+#Sua file alias
 alias nnb='nano ~/.bashrc'
 
-#Load lại file alias
+#Load lai file alias
 alias rlb='. ~/.bashrc'
 
 alias h='history'
