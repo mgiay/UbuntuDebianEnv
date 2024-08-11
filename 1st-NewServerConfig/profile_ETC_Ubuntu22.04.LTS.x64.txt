@@ -1,0 +1,139 @@
+#/etc/profile
+######################################################
+#LastUpdate: #9:39 2021.07.24, #9:20 2021.07.24, #9:09 2021.07.24
+######################################################
+#OS TYPE:
+# DISTRIB_ID=Ubuntu
+# DISTRIB_RELEASE=20.04
+# DISTRIB_CODENAME=focal
+# DISTRIB_DESCRIPTION="Ubuntu 20.04.1 LTS"
+
+#KERNEL INFORMATION: "Linux srv100-STOR 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux"
+######################################################
+#____________________[PROFILE_ORIGINAL]:BEGIN
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+if [ "${PS1-}" ]; then
+  if [ "${BASH-}" ] && [ "$BASH" != "/bin/sh" ]; then
+    # The file bash.bashrc already sets the default PS1.
+    # PS1='\h:\w\$ '
+    if [ -f /etc/bash.bashrc ]; then
+      . /etc/bash.bashrc
+    fi
+  else
+    if [ "`id -u`" -eq 0 ]; then
+      PS1='# '
+    else
+      PS1='$ '
+    fi
+  fi
+fi
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+#____________________[PROFILE_ORIGINAL]:END
+
+
+######################################################
+######################################################
+#!/bin/bash
+######################################################
+#FILE_NAME: /etc/profile
+#Author: qwerty | tinhcx@gmail.com
+#LastUpdate: #9:13 2021.07.24
+######################################################
+#____________________[PROFILE_CUSTOMIZE]:BEGIN
+#====================
+export PS1="\u@\h \w# "
+export HISTTIMEFORMAT='%F %T  '
+export EDITOR=nano
+#====================
+#GLOBAL PATH VARIABLES:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/jdk/bin:/opt/script:/opt/lampp/bin:/usr/local/pgsql/bin:/opt/mariadb/bin
+export PATH
+
+#JAVA CLASSPATH:
+#CLASSPATH=:/opt/jdk1.8.0_141/jre/lib:/opt/jdk1.8.0_141/jre/lib/ext:/opt/atlassian/jira/bin/bootstrap.jar:/opt/atlassian/jira/bin/tomcat-juli.jar:.
+#export CLASSPATH
+
+#cd /opt/
+#wget https://download.java.net/java/GA/jdk16.0.2/d4a915d82b4c4fbb9bde534da945d746/7/GPL/openjdk-16.0.2_linux-x64_bin.tar.gz
+#tar -xf openjdk-16.0.2_linux-x64_bin.tar.gz
+#\rm -rf openjdk-16.0.2_linux-x64_bin.tar.gz
+#ln -s /opt/jdk-16.0.2 jdk
+
+#cd /opt/
+#wget https://download.java.net/openjdk/jdk17.0.0.1/ri/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
+#tar -xf openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
+#\rm -rf openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
+#ln -s /opt/jdk-17.0.0.1 jdk
+#java -version
+
+
+JAVA_HOME=/opt/jdk
+export JAVA_HOME
+
+# JRE_HOME=/opt/jdk1.8.0_141/jre
+# export JRE_HOME
+#____________________[PROFILE_CUSTOMIZE]:END
+
+
+
+#____________________[GLOBAL_ALIAS]:BEGIN
+#https://viblo.asia/p/su-dung-alias-trong-linux-qm6RWq4xGeJE
+alias ls='ls -F --color=auto'
+alias ll='ls -l --color=auto'
+alias l.='ls -d .* --color=auto'
+alias lsd='ls -ld */'
+
+alias rm='echo "command not found"; false'
+
+#/usr/bin/apt       install x
+#/usr/bin//usr/bin/apt-get   install x
+alias apt-get='echo "command not found"; false'
+alias apt='echo "command not found"; false'
+
+
+alias ai='sudo /usr/bin/apt-get install'
+alias ar='sudo /usr/bin/apt-get remove'
+alias au='sudo /usr/bin/apt-get update'
+alias aug='sudo /usr/bin/apt-get upgrade'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias du='du -h'
+alias df='df -h'
+
+
+
+#Xoa man hinh va hien thi file, thu muc con
+alias cl='clear && ls'
+
+alias e='exit'
+alias s='sudo'
+
+#Sửa file alias
+alias nnb='nano ~/.bashrc'
+
+#Load lại file alias
+alias rlb='. ~/.bashrc'
+
+alias h='history'
+
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.last 'log -1 HEAD'
+
+#git config --get-regexp alias
+#____________________[GLOBAL_ALIAS]:END
+
+#THE_END
